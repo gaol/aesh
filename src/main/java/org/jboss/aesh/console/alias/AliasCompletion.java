@@ -19,7 +19,8 @@ public class AliasCompletion implements Completion {
     private static final String ALIAS_SPACE = "alias ";
     private static final String UNALIAS = "unalias";
     private static final String UNALIAS_SPACE = "unalias ";
-    private AliasManager manager;
+    private static final String HELP = "--help";
+    private final AliasManager manager;
 
     public AliasCompletion(AliasManager manager) {
         this.manager = manager;
@@ -36,12 +37,16 @@ public class AliasCompletion implements Completion {
         else if(completeOperation.getBuffer().equals(ALIAS_SPACE) ||
                 completeOperation.getBuffer().equals(UNALIAS_SPACE)) {
             completeOperation.addCompletionCandidates(manager.getAllNames());
+            completeOperation.addCompletionCandidate(HELP);
             completeOperation.setOffset(completeOperation.getCursor());
         }
         else if(completeOperation.getBuffer().startsWith(ALIAS_SPACE) ||
                 completeOperation.getBuffer().startsWith(UNALIAS_SPACE)) {
             String word = Parser.findWordClosestToCursor(completeOperation.getBuffer(), completeOperation.getCursor());
             completeOperation.addCompletionCandidates(manager.findAllMatchingNames(word));
+            if (HELP.startsWith(word)) {
+                completeOperation.addCompletionCandidate(HELP);
+            }
             completeOperation.setOffset(completeOperation.getCursor()-word.length());
         }
     }

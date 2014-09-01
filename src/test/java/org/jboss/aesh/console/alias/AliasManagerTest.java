@@ -39,6 +39,13 @@ public class AliasManagerTest extends TestCase {
                 .append("alias foo2='bar -s -h'"+ Config.getLineSeparator())
                 .append("alias foo3='bar --help'"+ Config.getLineSeparator());
         assertEquals(sb.toString(), out);
+
+        // the help information for the (un)alias itself
+        out = manager.parseAlias("alias --help");
+        assertEquals("alias: usage: alias [name[=value] ... ]" + Config.getLineSeparator(), out);
+
+        out = manager.parseAlias("alias        --help");
+        assertEquals("alias: usage: alias [name[=value] ... ]" + Config.getLineSeparator(), out);
     }
 
     public void testUnalias() throws Exception {
@@ -51,6 +58,10 @@ public class AliasManagerTest extends TestCase {
         manager.removeAlias("unalias foo3");
         assertEquals("aesh: unalias: foo3: not found"+Config.getLineSeparator(), manager.removeAlias("unalias foo3"));
 
+        String out = manager.removeAlias("unalias --help");
+        assertEquals("unalias: usage: unalias name [name ...]" + Config.getLineSeparator(), out);
 
+        out = manager.removeAlias("unalias        --help");
+        assertEquals("unalias: usage: unalias name [name ...]" + Config.getLineSeparator(), out);
     }
 }
